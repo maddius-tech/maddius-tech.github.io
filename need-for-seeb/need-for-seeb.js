@@ -64,8 +64,8 @@ const headerMaddis = [];
 
 let loadedImages = {};
 const images = [
-    { name: 'millet-seeb', src: '/need-for-seeb/images/millet-seeb.png' },
-    { name: 'sunflower-seeb', src: '/need-for-seeb/images/sunflower-seeb.png' },
+    { name: 'millet-seeb', src: 'need-for-seeb/images/millet-seeb.png' },
+    { name: 'sunflower-seeb', src: 'need-for-seeb/images/sunflower-seeb.png' },
     { name: 'maddi-0', src: 'need-for-seeb/images/maddi-0.png' },
     { name: 'maddi-1', src: 'need-for-seeb/images/maddi-1.png' },
     { name: 'maddi-2', src: 'need-for-seeb/images/maddi-2.png' },
