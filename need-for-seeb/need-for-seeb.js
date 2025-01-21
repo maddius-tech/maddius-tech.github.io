@@ -64,15 +64,15 @@ const headerMaddis = [];
 
 let loadedImages = {};
 const images = [
-    { name: 'millet-seeb', src: 'images/millet-seeb.png' },
-    { name: 'sunflower-seeb', src: 'images/sunflower-seeb.png' },
-    { name: 'maddi-0', src: 'images/maddi-0.png' },
-    { name: 'maddi-1', src: 'images/maddi-1.png' },
-    { name: 'maddi-2', src: 'images/maddi-2.png' },
-    { name: 'maddi-3', src: 'images/maddi-3.png' },
-    { name: 'maddi-4', src: 'images/maddi-4.png' },
-    { name: 'maddi-5', src: 'images/maddi-5.png' },
-    { name: 'maddi-eating', src: 'images/maddi-eating.png' }
+    { name: 'millet-seeb', src: 'need-for-seeb/images/millet-seeb.png' },
+    { name: 'sunflower-seeb', src: 'need-for-seeb/images/sunflower-seeb.png' },
+    { name: 'maddi-0', src: 'need-for-seeb/images/maddi-0.png' },
+    { name: 'maddi-1', src: 'need-for-seeb/images/maddi-1.png' },
+    { name: 'maddi-2', src: 'need-for-seeb/images/maddi-2.png' },
+    { name: 'maddi-3', src: 'need-for-seeb/images/maddi-3.png' },
+    { name: 'maddi-4', src: 'need-for-seeb/images/maddi-4.png' },
+    { name: 'maddi-5', src: 'need-for-seeb/images/maddi-5.png' },
+    { name: 'maddi-eating', src: 'need-for-seeb/images/maddi-eating.png' }
 ];
 
 // Load images using promises
@@ -731,7 +731,7 @@ async function displayLeaderboard() {
         const avatarCell = document.createElement('td');
         if (entry.avatar !== undefined && entry.avatar !== null) {
             const avatarImg = document.createElement('img');
-            avatarImg.src = `images/maddi-${entry.avatar}.png`;
+            avatarImg.src = `need-for-seeb/images/maddi-${entry.avatar}.png`;
             avatarImg.alt = "Avatar image";
             avatarCell.appendChild(avatarImg);
         }
