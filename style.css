@@ -1,0 +1,271 @@
+/* General */
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    padding-top: 20px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    border: 2px solid black;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    min-width: 120px;
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 5px 20px;
+    cursor: pointer;
+    background-color: lightgray;
+}
+
+button:hover {
+    background-color: darkgray;
+}
+
+button:disabled {
+    color: rgba(16, 16, 16, 0.3); 
+    cursor: auto;
+    pointer-events: none !important; /* Prevent any interaction, including hover */
+}
+
+/* Header styles */
+
+#header-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.header-img-container {
+    width: 100px;
+    height: 100px;
+}
+
+#header-container img.highlight {
+    border: 3px solid transparent; /* Space for the glow effect */
+    border-radius: 50%; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.8),
+                inset 0 0 10px rgba(0, 255, 0, 0.8);    
+    cursor: pointer; 
+}
+
+#title-container p {
+    margin: 0;
+}
+
+/* Game styles */
+
+.game-container {
+    display: flex; /* Flexbox layout */
+    justify-content: center; /* Space out the canvas and the scoreboard */
+    align-items: flex-start; /* Align items at the top */
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-bottom: 50px;
+}
+
+#game-canvas {
+    border: 2px solid black;
+    display: block;
+}
+
+#game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.6); /* Semi-transparent white */
+    z-index: 5;
+    pointer-events: none;
+    display: none;
+}
+
+#game-panel {
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    padding: 0;
+}
+
+/* Info panel styles */
+
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.board {
+    width: 100%;
+    max-width: 180px;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+    padding: 0px 20px 10px 20px;
+    border: 2px solid black; /* Border around the scoreboard */
+    margin-left: 10px;
+    text-align: center;
+}
+
+.board p {
+    margin: 20px;
+}
+
+.board h2 {
+    font-size: 25px;
+    margin: 10px;
+}
+
+.inline-image {
+    height: 2em;
+    vertical-align: middle;
+    width: auto;
+    margin-top: -8px;
+}
+
+.toggle {
+    display: flex;
+    border: 2px solid black;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.toggle button {
+    flex: 1;
+    margin-bottom: 0;
+    padding: 5px 0px;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    min-width: 0px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.toggle button.selected {
+    background-color: black;
+    color: white;
+    cursor: auto;
+    pointer-events: none;
+}
+
+.toggle button:not(.selected):hover {
+    background-color: darkgray;
+}
+
+#countdown-button {
+    font-size: 36px;
+    pointer-events: none;
+}
+
+#settings-board button {
+    width: 100%;
+}
+
+/* Popup styles */
+
+.popup {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px black;
+    z-index: 10; /* Ensures it appears above the canvas */
+    display: none; /* Initially hidden */
+}
+
+#player-name {
+    padding: 6px;
+    margin: 0px 6px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+
+/* Leaderboard styes */
+
+#leaderboard-table {
+    width: 100%;
+    max-width: 600px;
+    border-collapse: collapse;
+    box-sizing: border-box;
+}
+
+#leaderboard-table img {
+    height: 30px;
+    width: 30px;
+}
+
+th, td {
+    padding: 3px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    color: rgb(95, 95, 95);
+    font-size: 16px;
+}
+
+td {
+    font-size: 16px;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Restrict the width of the "Name" column */
+td:nth-child(3) { /* Assuming the "Name" column is the second column */
+    max-width: 90px; /* Adjust the width as needed */
+    overflow: hidden; /* Hide the overflowing content */
+    text-overflow: ellipsis; /* Add "..." to indicate truncated content */
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    padding-left: 0px;
+}
+
+/* Right Align the Score Column */
+td:nth-child(4),
+th:nth-child(4) {
+    text-align: right;
+}
+
+/* Final */
+
+.hidden {
+    display: none;
+}
+
+/* Narrow screen styles */
+@media (max-width: 850px) {
+    .game-container {
+        flex-direction: column; /* Stack the items (scoreboard and canvas) vertically */
+        justify-content: flex-start; /* Align them at the top */
+    }
+
+    #score-board {
+        margin-bottom: 10px; /* Add some space between the canvas and the scoreboard when stacked */
+    }
+
+    #game-canvas {
+        margin-top: 10px; /* Add space above canvas */
+    }
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Need for Seeb</title>
+    <!-- Link the CSS file -->
+    <link rel="stylesheet" href="../style.css">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+    <div id="header-container">
+        <div class="header-img-container">
+        </div>
+        <div class="header-img-container">
+        </div>
+        <div class="header-img-container">
+        </div>
+        <div id="title-container">
+            <h1>Need for Seeb</h1>
+            <p>Use the arrow keys to help Maddi eat the seeb.</p>
+        </div>
+        <div class="header-img-container">
+        </div>
+        <div class="header-img-container">
+        </div>
+        <div class="header-img-container">
+        </div>
+    </div>
+    
+    <div class="game-container">
+
+        <div id="game-panel">
+
+            <canvas id="game-canvas" width="800" height="600"></canvas>
+            <div id="game-overlay"></div>
+
+            <div id="game-over-popup" class="hidden popup">
+                <h2>Game Over</h2>
+                <label for="player-name">Your name:</label>
+                <input type="text" id="player-name">
+                <p>Your Score: <span id="final-score"></span></p>
+                <button id="save-score-button">Save score</button>
+                <button id="end-restart-button">Restart</button>
+            </div>
+
+            <div id="switch-popup" class="hidden popup">
+                <h2>Are you sure?</h2>
+                <p>Switching game mode will end your current game without saving your score.</p>
+                <button id="cancel-switch-button">Back</button>
+                <button id="confirm-switch-button"><span id="switch-game-span"></span></button>
+            </div>
+
+        </div>
+
+        <div class="info-panel">
+
+            <div id="score-board" class="board">
+                <h2>Score</h2>
+                <p><span id="millet-container"></span><span id="millet-count">0</span></p>
+                <p><span id="sunflower-container"></span><span id="sunflower-count">0</span></p>
+                <p>Total score: <span id="total-score">0</span></p>
+                <button id="countdown-button" class="hidden"><span id="countdown-span"></span></button>
+                <button id="end-game-button">End Game</button>
+            </div>
+
+            <div id="settings-board" class="board">
+                <h2>Settings</h2>
+                <div id="mode-toggle" class="toggle">
+                    <button id="timer-button">Timer</button>
+                    <button id="zen-button" class="selected">Zen</button>
+                </div>
+                <div id="time-toggle" class="toggle hidden">
+                    <button id="short-time-button" class="time-option"></button>
+                    <button id="med-time-button" class="time-option"></button>
+                    <button id="long-time-button" class="time-option"></button>
+                </div>
+                <button id="change-maddi-button">Change Maddi</button>
+            </div>
+
+            <div id="leader-board" class="board">
+                <h2>Leaderboard</h2>
+                <table id="leaderboard-table">
+                    <thead><tr>
+                        <th></th>
+                        <th></th>
+                        <th>Player</th>
+                        <th>Score</th>
+                    </tr></thead>
+                    <tbody>
+                        <!-- Leaderboard scores inserted dynamically here -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JavaScript game file -->
+    <script src="need-for-seeb.js"></script>
+
+    <div>
+        <p>&copy; 2025 Maddius Technologies. All rights reserved.</p>
+    </div>
+
+</body>
+
+</html>
