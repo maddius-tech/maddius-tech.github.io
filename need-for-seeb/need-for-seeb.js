@@ -52,6 +52,7 @@ const totalScoreElement = document.getElementById('total-score');
 // Leaderboard
 const playerNameInput = document.getElementById('player-name');
 const saveScoreButton = document.getElementById('save-score-button');
+const leaderboardLimit = 5;
 
 // Avatar selection
 let selectedMaddi = 0;
@@ -696,7 +697,7 @@ function saveToLocalStorage(name, score, gameMode, avatar) {
     leaderboard.sort((a, b) => b.score - a.score);
     
     // Limits number of entries
-    if (leaderboard.length > 5) { //If more than 5 entries,
+    if (leaderboard.length > leaderboardLimit) { //If more than set amount of entries,
         leaderboard.pop(); // removes lowest score
     }
     
@@ -709,7 +710,7 @@ async function displayLeaderboard() {
     const gameMode = getGameMode();
     let leaderboard;
     try {
-        leaderboard = await getSupabaseLeaderboard(gameMode);
+        leaderboard = await getSupabaseLeaderboard(gameMode, leaderboardLimit);
     } catch (error) {
         console.error(error);
         leaderboard = getLocalLeaderboard(gameMode);
@@ -749,25 +750,67 @@ async function displayLeaderboard() {
     });
 }
 
-async function getSupabaseLeaderboard(gameMode) {
-    const { data, error } = await supabaseClient
+async function getSupabaseLeaderboard(gameMode, limit) {
+    let query = supabaseClient
         .from('leaderboard')
         .select('name, score, avatar')
         .eq('game_mode', gameMode)
-        .order('score', { ascending: false})
-        .limit(5);
+        .order('score', { ascending: false});
+    if (limit !== undefined) {
+        query = query.limit(limit);
+    }
+    const { data, error } = await query;
         
     if (error) {
         throw new Error(`Error fetching leaderboard from Supabase: ${error.message}`);
     } else {
         return data;
     }
-
 }
 
 function getLocalLeaderboard(gameMode) {
     const leaderboardKey = `${gameMode}-leaderboard`;
     return JSON.parse(localStorage.getItem(leaderboardKey)) || [];
+}
+
+//Syncs local scores for specific game mode to Supabase
+async function syncLocalScoresToSupabase(gameMode) {
+    const localScores = getLocalLeaderboard(gameMode);
+    let supabaseScores = [];
+
+    try {
+        supabaseScores = await getSupabaseLeaderboard(gameMode);
+    } catch (error) {
+        console.warn("Skipping sync – Supabase not reachable:", error.message);
+        return;
+    }
+
+    //Check which entries aren't already in supabase
+    const newEntries = localScores.filter(localEntry => {
+        return !supabaseScores.some(supabaseEntry =>
+            supabaseEntry.name === localEntry.name &&
+            supabaseEntry.score === localEntry.score &&
+            supabaseEntry.avatar === localEntry.avatar
+        );
+    });
+
+    for (const entry of newEntries) {
+        try {
+            await saveToSupabase(entry.name, entry.score, gameMode, entry.avatar);
+            console.log(`Synced score for ${entry.name}`);
+        } catch (error) {
+            console.error(`Failed to sync ${entry.name}:`, error.message);
+        }
+    }
+}
+
+//Syncs all local scores to supabase
+async function syncAllLocalScoresToSupabase() {
+    const gameModes = [0, shortGame, medGame, longGame];
+
+    for (const mode of gameModes) {
+        await syncLocalScoresToSupabase(mode);
+    }
 }
 
 // Get number ID of current game mode
@@ -782,8 +825,11 @@ function getGameMode() {
 //Event listener
 saveScoreButton.addEventListener("click", saveScore);
 
-//Displays leaderboard when window loads
-window.onload = displayLeaderboard;
+//Syncs new entries from local leaderboard to Supabase when window loads
+window.addEventListener('DOMContentLoaded', async () => {
+    await syncAllLocalScoresToSupabase();
+    await displayLeaderboard();
+});
 
 //
 // GAME ENTRY POINT
