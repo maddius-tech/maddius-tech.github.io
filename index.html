@@ -10,17 +10,22 @@
 
 <body>
 
-    <header>
-        <h1>Welcome</h1>
-        <p>Play our new game - <a href="need-for-seeb.html">Need for Seeb</a></p>
-    </header>
+    <div id="header"></div>
+
+    <script>
+        fetch("components/header.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("header").innerHTML = html;
+        });
+    </script>
 
     <main>
 
         <section>
             <h2>Get Started</h2>
             <p>Click the link below to start playing:</p>
-            <a href="need-for-seeb.html">Go to Game</a>
+            <a href="need-for-seeb.html">Need for Seeb</a>
         </section>
 
     </main>
@@ -28,6 +33,8 @@
     <footer>
         <p>&copy; 2025 Maddius Technologies. All rights reserved.</p>
     </footer>
+
+    <script type="module" src="scripts/main.js"></script>
 
 </body>
 
