@@ -6,7 +6,6 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    padding-top: 20px;
     height: 100%;
     box-sizing: border-box;
 }
@@ -33,4 +32,41 @@ button:disabled {
     color: rgba(16, 16, 16, 0.3); 
     cursor: auto;
     pointer-events: none !important; /* Prevent any interaction, including hover */
+}
+
+/* Header styles */
+
+header {
+  padding: 1em;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header a {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #333;
+}
+
+header nav {
+  display: flex;
+  align-items: center;
+}
+
+#current-user {
+  margin-right: 1em;
+}
+
+#login-btn,
+#logout-btn {
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+}
+
+#logout-btn {
+  display: none;
 }
