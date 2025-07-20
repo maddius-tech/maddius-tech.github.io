@@ -1,0 +1,31 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+#levels-map-container {
+    width: 80%;
+    height: 300px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.rounded-box {
+    box-sizing: border-box;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 16px;
+}
+
+.level-card {
+    width: 200px;
+    height: 100px;
+}

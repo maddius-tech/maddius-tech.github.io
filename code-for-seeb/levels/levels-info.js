@@ -1,4 +1,4 @@
-[
+export const levelInfo = [
     {
         "id": "html-1",
         "title": "Basic Syntax",
@@ -39,4 +39,4 @@
         "title": "Forms & buttons",
         "description": "Use inputs & buttons in forms"
     }
-]
+];
