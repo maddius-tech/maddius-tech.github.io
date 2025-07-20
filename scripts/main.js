@@ -1,8 +1,8 @@
 window.addEventListener("load", () => {
     // Load header and modal in parallel
     Promise.all([
-        fetch("components/header.html").then(res => res.text()),
-        fetch("components/auth-modal.html").then(res => res.text())
+        fetch("/components/header.html").then(res => res.text()),
+        fetch("/components/auth-modal.html").then(res => res.text())
     ])
     .then(([headerHtml, modalHtml]) => {
         document.getElementById("header").innerHTML = headerHtml;
@@ -17,9 +17,14 @@ window.addEventListener("load", () => {
 
 async function initFirebaseAuth() {
     // Dynamically import Firebase modules
-    const [{ initializeApp, getApps }, { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword }] = await Promise.all([
+    const [
+        { initializeApp, getApps }, 
+        { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword }, 
+        { getDoc, setDoc, doc, getFirestore }
+    ] = await Promise.all([
         import("https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"),
         import("https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"),
+        import("https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"),
     ]);
 
     const firebaseConfig = {
@@ -34,6 +39,7 @@ async function initFirebaseAuth() {
     // Initialize Firebase app if not already initialized
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
     // DOM elements
     const loginForm = document.getElementById("login-form");
@@ -48,8 +54,20 @@ async function initFirebaseAuth() {
     const modal = document.getElementById("auth-modal");
 
     // Auth state change
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
         if (user) {
+            const userDocRef = doc(db, "users", user.uid);
+            const userDocSnap = await getDoc(userDocRef);
+
+            if (!userDocSnap.exists()) {
+                //Create user document with default data
+                await setDoc(userDocRef, {
+                    email: user.email,
+                    progress: {},
+                    createdAt: new Date().toISOString(),
+                });
+            }
+
             userDisplay.textContent = `Logged in as ${user.email}`;
             loginBtn.style.display = "none";
             logoutBtn.style.display = "inline-block";
