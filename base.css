@@ -1,0 +1,36 @@
+/* General */
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    padding-top: 20px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    border: 2px solid black;
+    border-radius: 10px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    min-width: 120px;
+    white-space: nowrap;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 5px 20px;
+    cursor: pointer;
+    background-color: lightgray;
+}
+
+button:hover {
+    background-color: darkgray;
+}
+
+button:disabled {
+    color: rgba(16, 16, 16, 0.3); 
+    cursor: auto;
+    pointer-events: none !important; /* Prevent any interaction, including hover */
+}

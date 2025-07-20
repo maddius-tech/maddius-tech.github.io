@@ -5,27 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home | Maddius Technologies</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="base.css">
 </head>
 
 <body>
 
     <div id="header"></div>
 
-    <script>
-        fetch("components/header.html")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("header").innerHTML = html;
-        });
-    </script>
-
     <main>
 
         <section>
             <h2>Get Started</h2>
             <p>Click the link below to start playing:</p>
-            <a href="need-for-seeb.html">Need for Seeb</a>
+            <a href="/need-for-seeb/need-for-seeb.html">Need for Seeb</a>
         </section>
 
     </main>
