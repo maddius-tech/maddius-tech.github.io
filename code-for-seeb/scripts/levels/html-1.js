@@ -42,6 +42,17 @@ export const questions = [
         mistakes: {
             mistakeType: 'wrongPlace',
             targetComponents: ['/'],
+            extraParams: ['<', 'p', '>'],
+        },
+    },
+    {
+        question: "Which <strong>closing tag</strong> is correct?",
+        correctAnswer: "</h1>",
+        questionType: 'multiChoice',
+        mistakes: {
+            mistakeType: 'wrongPlace',
+            targetComponents: ['/'],
+            extraParams: ['<', 'h1', '>'],
         },
     },
 ];

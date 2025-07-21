@@ -63,6 +63,28 @@ const wrongSymbols = (correctAnswer, targetComponents) => {
     return optionsArray;
 };
 
+const wrongPlace = (correctAnswer, targetComponents, otherComponents) => {
+    let optionsArray = [];
+
+    //Currently only handles 1 target component
+    const targetComponent = targetComponents[0];
+
+    for (let i = 0; i <= otherComponents.length; i++) {
+        const newArray = [
+            ...otherComponents.slice(0, i),
+            targetComponent,
+            ...otherComponents.slice(i),
+        ];
+        const newOption = newArray.join(''); 
+        optionsArray.push(newOption);
+    };
+
+    //Later: need to handle limiting number of options for long arrays?? If needed.
+
+    console.log(optionsArray);
+    return optionsArray;
+};
+
 // Lookup tables
 const questionTypes = {
     "multiChoice": displayMultiChoiceQ,
@@ -70,9 +92,10 @@ const questionTypes = {
 
 const mistakeGenerators = {
     "wrongSymbols": wrongSymbols,
+    "wrongPlace": wrongPlace,
 };
 
-//Helper
+//Helpers
 function shuffleArray(array) {
     const newArr = [...array]; // Make a shallow copy to avoid modifying original
     for (let i = newArr.length - 1; i > 0; i--) {
@@ -84,15 +107,18 @@ function shuffleArray(array) {
 
 export const generateOptions = (correctAnswer, mistakes) => {
     //Get mistake info
-    const mistakeType = mistakes['mistakeType'];
-    const targetComponents = mistakes['targetComponents'];
+    const { mistakeType, targetComponents, extraParams } = mistakes;
     const mistakeFn = mistakeGenerators[mistakeType];
     
     if (!mistakeFn) {
         throw new Error(`Unknown mistake type: ${mistakeType}`);
     }
-        
-    return mistakeFn(correctAnswer, targetComponents);
+
+    if (Array.isArray(extraParams) && extraParams.length > 0) {
+        return mistakeFn(correctAnswer, targetComponents, extraParams);
+    } else {
+        return mistakeFn(correctAnswer, targetComponents);
+    }
 };
 
 export const displayQuestion = (questionData, container, answerCallback) => {
