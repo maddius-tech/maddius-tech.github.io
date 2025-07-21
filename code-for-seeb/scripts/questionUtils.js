@@ -7,14 +7,16 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
     //Get info from object
     const question = questionData['question'];
     const correctAnswer = questionData['correctAnswer'];
-    const mistakeType = questionData['mistakeType'];
+    const mistakes = questionData['mistakes'];
     
     //Display question
     questionText.innerHTML = question;
     
-    //Get options, add correct answer & randomize order
-    const options = generateOptions(correctAnswer, mistakeType);
-    options.push(correctAnswer);
+    //Get options, add correct answer if needed & randomize order
+    const options = generateOptions(correctAnswer, mistakes);
+    if (!options.includes(correctAnswer)) {
+        options.push(correctAnswer);
+    }
     const shuffledOptions = shuffleArray(options);
     
     //Displaying options
@@ -40,13 +42,25 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
 }
 
 //Mistake generators
-const wrongSymbols = (correctAnswer) => {
-    const tagName = correctAnswer.replace(/[<>]/g, '');
-    return [
-        `(${tagName})`,
-        `"${tagName}"`,
-        `{${tagName}}`
+const wrongSymbols = (correctAnswer, targetComponents) => {
+    const differentSymbols = [
+        ['(', ')'],
+        ['"', '"'],
+        ['{', '}'],
+        ['<', '>'],
     ];
+
+    let optionsArray = [];
+    differentSymbols.forEach(symbols => {
+        let newOption = correctAnswer;
+        //Replace each target component with corresponding new symbols
+        for (let i = 0; i < targetComponents.length; i++) {
+            newOption = newOption.replace(targetComponents[i], symbols[i]);
+        }
+        optionsArray.push(newOption);
+    });
+
+    return optionsArray;
 };
 
 // Lookup tables
@@ -68,14 +82,17 @@ function shuffleArray(array) {
     return newArr;
 };
 
-export const generateOptions = (correctAnswer, mistakeType) => {
+export const generateOptions = (correctAnswer, mistakes) => {
+    //Get mistake info
+    const mistakeType = mistakes['mistakeType'];
+    const targetComponents = mistakes['targetComponents'];
     const mistakeFn = mistakeGenerators[mistakeType];
     
     if (!mistakeFn) {
         throw new Error(`Unknown mistake type: ${mistakeType}`);
     }
         
-    return mistakeFn(correctAnswer);
+    return mistakeFn(correctAnswer, targetComponents);
 };
 
 export const displayQuestion = (questionData, container, answerCallback) => {
