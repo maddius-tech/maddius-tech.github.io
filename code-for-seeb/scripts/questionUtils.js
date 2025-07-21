@@ -27,6 +27,10 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
         //Store whether it is correct
         const isCorrect = option === correctAnswer;
         optionDiv.addEventListener('click', () => {
+            if (isCorrect) {
+                questionText.innerHTML = '';
+                optionsContainer.innerHTML = '';
+            }
             handleAnswer(isCorrect);
         });
         

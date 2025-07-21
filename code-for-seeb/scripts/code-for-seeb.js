@@ -6,6 +6,7 @@ import { displayQuestion } from "./questionUtils.js";
 
 //Global variables
 const questionIndexRef = { value: 0 };
+let currentQuestions = [];
 
 //Elements
 const mapContainer = document.getElementById("levels-map-container");
@@ -14,6 +15,13 @@ const gameContainer = document.getElementById("game-container");
 const handleAnswer = (correct) => {
     if (correct) {
         console.log('right answer!!!');
+        questionIndexRef.value++;
+        console.log('NEXT QUESTION: ', questionIndexRef.value);
+        if (questionIndexRef.value < currentQuestions.length) {
+            displayQuestion(currentQuestions[questionIndexRef.value], gameContainer, handleAnswer);
+        } else {
+            console.log('FINISHED THE LEVEL');
+        }
     } else {
         console.log('nooooo');
     }
@@ -27,8 +35,8 @@ const loadLevel = async (levelId) => {
 
         //Load questions
         const module = await import(`./levels/${levelId}.js`);
-        const questions = module.questions;
-        displayQuestion(questions[0], gameContainer, handleAnswer);
+        currentQuestions = module.questions;
+        displayQuestion(currentQuestions[0], gameContainer, handleAnswer);
     } catch (error) {
         console.error(`Failed to load level ${levelId}:`);
     }
