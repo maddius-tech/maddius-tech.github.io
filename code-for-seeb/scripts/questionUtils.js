@@ -1,9 +1,8 @@
 //Functions for different question types
-const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
-    //Get elements
-    const questionText = container.querySelector("#question-text");
-    const optionsContainer = container.querySelector("#options-container");
-    
+const displayMultiChoiceQ = (questionData, { questionText, optionsContainer }, handleAnswer) => {
+    //Change displays
+    optionsContainer.classList.add("options-grid");
+
     //Get info from object
     const question = questionData['question'];
     const correctAnswer = questionData['correctAnswer'];
@@ -40,6 +39,8 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
         optionsContainer.appendChild(optionDiv);
     });
 }
+
+
 
 //Option generators
 const wrongSymbols = ({ targetComponents, extraParams }) => {
@@ -128,6 +129,12 @@ export const displayQuestion = (questionData, container, answerCallback) => {
         throw new Error(`Unknown question type: ${questionType}`);
     }
 
-    return questionFn(questionData, container, answerCallback);
+    //Get elements
+    const containers = {
+        questionText: container.querySelector("#question-text"),
+        optionsContainer: container.querySelector("#options-container"),
+    };
+
+    return questionFn(questionData, containers, answerCallback);
 }
 

@@ -72,4 +72,17 @@ export const questions = [
             ],
         },
     },
+    {
+        question: "Put these in the correct order.",
+        correctAnswer: "<p>I love muffins.</p>",
+        questionType: 'order',
+        optionInfo: {
+            optionType: 'customOptions',
+            customOptions: [
+                '<p>',
+                'I love muffins.',
+                '</p>',
+            ],
+        },
+    },
 ];
