@@ -55,6 +55,7 @@ main {
     display: none;
     flex-direction: column;
     gap: 20px;
+    font-size: x-large;
 }
 
 #options-container {

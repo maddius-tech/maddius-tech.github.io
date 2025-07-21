@@ -2,10 +2,32 @@ import { levelInfo } from "./levels/levels-info.js";
 import firebase from "../../scripts/firebase-init.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { displayQuestion } from "./questionUtils.js";
+
+//Global variable
+let questionIndex = 0;
+
+//Elements
+const mapContainer = document.getElementById("levels-map-container");
+const gameContainer = document.getElementById("game-container");
+
+const loadLevel = async (levelId) => {
+    try {
+        //Display gameplay container
+        mapContainer.style.display = "none";
+        gameContainer.style.display = "flex";
+
+        //Load questions
+        const module = await import(`./levels/${levelId}.js`);
+        const questions = module.questions;
+        
+        displayQuestion(questions[questionIndex], gameContainer);
+    } catch (error) {
+        console.error(`Failed to load level ${levelId}:`);
+    }
+};
 
 const loadLevelsMap = async () => {
-    const mapContainer = document.getElementById("levels-map-container");
-    const gameContainer = document.getElementById("game-container");
     const { auth, db } = await firebase;
 
     const levelDivs = {};
@@ -19,17 +41,9 @@ const loadLevelsMap = async () => {
         `;
 
         //Add click listener
-        div.addEventListener("click", async () => {
+        div.addEventListener("click", () => {
             console.log(`Clicked level: ${level.id}`);
-            const levelId = level.id;
-            try {
-                const module = await import(`./levels/${levelId}.js`);
-                mapContainer.style.display = "none";
-                gameContainer.style.display = "flex";
-                module.launchLevel(gameContainer);
-            } catch (error) {
-                console.error(`Failed to load level ${levelId}:`);
-            }
+            loadLevel(level.id);
         });
 
         //Add to html & to object

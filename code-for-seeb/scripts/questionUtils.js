@@ -1,4 +1,38 @@
+//Functions for different question types
+const displayMultiChoiceQ = (questionData, container) => {
+    //Get elements
+    const questionText = container.querySelector("#question-text");
+    const optionsContainer = container.querySelector("#options-container");
+    
+    //Get info from object
+    const question = questionData['question'];
+    const correctAnswer = questionData['correctAnswer'];
+    const mistakeType = questionData['mistakeType'];
+    
+    //Display question
+    questionText.innerHTML = question;
+    
+    //Get options, add correct answer & randomize order
+    const options = generateOptions(correctAnswer, mistakeType);
+    options.push(correctAnswer);
+    const shuffledOptions = shuffleArray(options);
+    
+    //Displaying options
+    shuffledOptions.forEach(option => {
+        //Create div for option
+        const optionDiv = document.createElement("div");
+        optionDiv.classList.add("option-div", "rounded-box");
 
+        //Store whether it is correct
+        optionDiv.dataset.correct = (option === correctAnswer).toString();
+
+        //Display
+        optionDiv.textContent = option;
+        optionsContainer.appendChild(optionDiv);
+    });
+}
+
+//Mistake generators
 const wrongSymbols = (correctAnswer) => {
     const tagName = correctAnswer.replace(/[<>]/g, '');
     return [
@@ -8,7 +42,11 @@ const wrongSymbols = (correctAnswer) => {
     ];
 };
 
-// Lookup table
+// Lookup tables
+const questionTypes = {
+    "multiChoice": displayMultiChoiceQ,
+};
+
 const mistakeGenerators = {
     "wrongSymbols": wrongSymbols,
 };
@@ -33,26 +71,14 @@ export const generateOptions = (correctAnswer, mistakeType) => {
     return mistakeFn(correctAnswer);
 };
 
-export const displayMultiChoiceQ = (container, question, correctAnswer, options) => {
-    //Get elements
-    const questionText = container.querySelector("#question-text");
-    const optionsContainer = container.querySelector("#options-container");
+export const displayQuestion = (questionData, container) => {
+    const questionType = questionData['questionType'];
+    const questionFn = questionTypes[questionType];
     
-    //Display question
-    questionText.innerHTML = question;
+    if (!questionFn) {
+        throw new Error(`Unknown question type: ${questionType}`);
+    }
 
-    //Add correct answer to options & randomize
-    options.push(correctAnswer);
-    const shuffledOptions = shuffleArray(options);
-    
-    shuffledOptions.forEach(option => {
-        const optionDiv = document.createElement("div");
-        optionDiv.classList.add("option-div", "rounded-box");
-
-        optionDiv.dataset.correct = (option === correctAnswer).toString();
-
-        optionDiv.textContent = option;
-        optionsContainer.appendChild(optionDiv);
-    });
-    
+    return questionFn(questionData, container);
 }
+
