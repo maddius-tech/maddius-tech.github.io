@@ -4,12 +4,20 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/fi
 import { getDoc, doc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { displayQuestion } from "./questionUtils.js";
 
-//Global variable
-let questionIndex = 0;
+//Global variables
+const questionIndexRef = { value: 0 };
 
 //Elements
 const mapContainer = document.getElementById("levels-map-container");
 const gameContainer = document.getElementById("game-container");
+
+const handleAnswer = (correct) => {
+    if (correct) {
+        console.log('right answer!!!');
+    } else {
+        console.log('nooooo');
+    }
+};
 
 const loadLevel = async (levelId) => {
     try {
@@ -20,8 +28,7 @@ const loadLevel = async (levelId) => {
         //Load questions
         const module = await import(`./levels/${levelId}.js`);
         const questions = module.questions;
-        
-        displayQuestion(questions[questionIndex], gameContainer);
+        displayQuestion(questions[0], gameContainer, handleAnswer);
     } catch (error) {
         console.error(`Failed to load level ${levelId}:`);
     }
