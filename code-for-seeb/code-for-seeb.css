@@ -1,0 +1,80 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+#main-container {
+    width: 80%;
+    height: fit-content;
+    margin: 0 auto;
+}
+
+.rounded-box {
+    box-sizing: border-box;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 16px;
+}
+
+/*Levels map styles*/
+
+#levels-map-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+
+.level-card {
+    width: 200px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+
+}
+
+.level-card h3 {
+    padding: 0;
+    margin: 0;
+}
+
+.level-card p {
+    margin: 0;
+}
+
+/*Game styles*/
+#game-container {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    font-size: x-large;
+}
+
+#options-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px;
+}
+
+.option-div {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.option-div:hover {
+    background-color: black;
+    color: white;
+}
