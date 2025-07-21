@@ -6,6 +6,7 @@ export const questions = [
         mistakes: {
             mistakeType: 'wrongSymbols', 
             targetComponents: ['<', '>'],
+            extraParams: "<p>",
         },
     },
     {
@@ -15,6 +16,7 @@ export const questions = [
         mistakes: {
             mistakeType: 'wrongSymbols', 
             targetComponents: ['<', '>'],
+            extraParams: "<h1>",
         },
     },
     {
@@ -24,6 +26,7 @@ export const questions = [
         mistakes: {
             mistakeType: 'wrongSymbols', 
             targetComponents: ['<', '>'],
+            extraParams: "<h3>",
         },
     },
     {
@@ -33,6 +36,7 @@ export const questions = [
         mistakes: {
             mistakeType: 'wrongSymbols', 
             targetComponents: ['<', '>'],
+            extraParams: "</p>",
         },
     },
     {
@@ -53,6 +57,19 @@ export const questions = [
             mistakeType: 'wrongPlace',
             targetComponents: ['/'],
             extraParams: ['<', 'h1', '>'],
+        },
+    },
+    {
+        question: "Which makes a <strong>paragraph</strong> saying 'Hello!'?",
+        correctAnswer: "<p>Hello!</p>",
+        questionType: 'multiChoice',
+        mistakes: {
+            mistakeType: 'customArray',
+            customMistakes: [
+                '<p Hello! /p>',
+                '<p Hello! />',
+                'p<Hello!>/p',
+            ],
         },
     },
 ];

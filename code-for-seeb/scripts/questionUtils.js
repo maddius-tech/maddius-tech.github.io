@@ -13,7 +13,7 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
     questionText.innerHTML = question;
     
     //Get options, add correct answer if needed & randomize order
-    const options = generateOptions(correctAnswer, mistakes);
+    const options = generateOptions(mistakes);
     if (!options.includes(correctAnswer)) {
         options.push(correctAnswer);
     }
@@ -42,7 +42,7 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
 }
 
 //Mistake generators
-const wrongSymbols = (correctAnswer, targetComponents) => {
+const wrongSymbols = ({ targetComponents, extraParams }) => {
     const differentSymbols = [
         ['(', ')'],
         ['"', '"'],
@@ -52,7 +52,7 @@ const wrongSymbols = (correctAnswer, targetComponents) => {
 
     let optionsArray = [];
     differentSymbols.forEach(symbols => {
-        let newOption = correctAnswer;
+        let newOption = extraParams;
         //Replace each target component with corresponding new symbols
         for (let i = 0; i < targetComponents.length; i++) {
             newOption = newOption.replace(targetComponents[i], symbols[i]);
@@ -63,7 +63,7 @@ const wrongSymbols = (correctAnswer, targetComponents) => {
     return optionsArray;
 };
 
-const wrongPlace = (correctAnswer, targetComponents, otherComponents) => {
+const wrongPlace = ({ targetComponents, extraParams: otherComponents }) => {
     let optionsArray = [];
 
     //Currently only handles 1 target component
@@ -81,9 +81,10 @@ const wrongPlace = (correctAnswer, targetComponents, otherComponents) => {
 
     //Later: need to handle limiting number of options for long arrays?? If needed.
 
-    console.log(optionsArray);
     return optionsArray;
 };
+
+const customMistakes = ({ customMistakes }) => customMistakes;
 
 // Lookup tables
 const questionTypes = {
@@ -93,6 +94,8 @@ const questionTypes = {
 const mistakeGenerators = {
     "wrongSymbols": wrongSymbols,
     "wrongPlace": wrongPlace,
+    "customArray": customMistakes,
+
 };
 
 //Helpers
@@ -105,20 +108,16 @@ function shuffleArray(array) {
     return newArr;
 };
 
-export const generateOptions = (correctAnswer, mistakes) => {
+export const generateOptions = (mistakes) => {
     //Get mistake info
-    const { mistakeType, targetComponents, extraParams } = mistakes;
+    const { mistakeType } = mistakes;
     const mistakeFn = mistakeGenerators[mistakeType];
     
     if (!mistakeFn) {
         throw new Error(`Unknown mistake type: ${mistakeType}`);
     }
 
-    if (Array.isArray(extraParams) && extraParams.length > 0) {
-        return mistakeFn(correctAnswer, targetComponents, extraParams);
-    } else {
-        return mistakeFn(correctAnswer, targetComponents);
-    }
+    return mistakeFn(mistakes);
 };
 
 export const displayQuestion = (questionData, container, answerCallback) => {
