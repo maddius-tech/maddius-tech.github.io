@@ -8,14 +8,10 @@ main {
     flex: 1;
 }
 
-#levels-map-container {
+#main-container {
     width: 80%;
-    height: 300px;
+    height: fit-content;
     margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: space-between;
 }
 
 .rounded-box {
@@ -24,6 +20,16 @@ main {
     border-radius: 20px;
     padding: 16px;
 }
+
+/*Levels map styles*/
+
+#levels-map-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+}
+
 
 .level-card {
     width: 200px;
@@ -42,4 +48,32 @@ main {
 
 .level-card p {
     margin: 0;
+}
+
+/*Game styles*/
+#game-container {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#options-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px;
+}
+
+.option-div {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.option-div:hover {
+    background-color: black;
+    color: white;
 }
