@@ -7,13 +7,13 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
     //Get info from object
     const question = questionData['question'];
     const correctAnswer = questionData['correctAnswer'];
-    const mistakes = questionData['mistakes'];
+    const optionInfo = questionData['optionInfo'];
     
     //Display question
     questionText.innerHTML = question;
     
     //Get options, add correct answer if needed & randomize order
-    const options = generateOptions(mistakes);
+    const options = generateOptions(optionInfo);
     if (!options.includes(correctAnswer)) {
         options.push(correctAnswer);
     }
@@ -41,7 +41,7 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
     });
 }
 
-//Mistake generators
+//Option generators
 const wrongSymbols = ({ targetComponents, extraParams }) => {
     const differentSymbols = [
         ['(', ')'],
@@ -84,17 +84,17 @@ const wrongPlace = ({ targetComponents, extraParams: otherComponents }) => {
     return optionsArray;
 };
 
-const customMistakes = ({ customMistakes }) => customMistakes;
+const customOptions = ({ customOptions }) => customOptions;
 
 // Lookup tables
 const questionTypes = {
     "multiChoice": displayMultiChoiceQ,
 };
 
-const mistakeGenerators = {
+const optionGenerators = {
     "wrongSymbols": wrongSymbols,
     "wrongPlace": wrongPlace,
-    "customArray": customMistakes,
+    "customOptions": customOptions,
 
 };
 
@@ -108,16 +108,16 @@ function shuffleArray(array) {
     return newArr;
 };
 
-export const generateOptions = (mistakes) => {
-    //Get mistake info
-    const { mistakeType } = mistakes;
-    const mistakeFn = mistakeGenerators[mistakeType];
+export const generateOptions = (optionInfo) => {
+    //Get option info
+    const { optionType } = optionInfo;
+    const optionFn = optionGenerators[optionType];
     
-    if (!mistakeFn) {
-        throw new Error(`Unknown mistake type: ${mistakeType}`);
+    if (!optionFn) {
+        throw new Error(`Unknown option type: ${optionType}`);
     }
 
-    return mistakeFn(mistakes);
+    return optionFn(optionInfo);
 };
 
 export const displayQuestion = (questionData, container, answerCallback) => {
