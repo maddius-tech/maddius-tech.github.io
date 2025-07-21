@@ -28,4 +28,18 @@ main {
 .level-card {
     width: 200px;
     height: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+
+}
+
+.level-card h3 {
+    padding: 0;
+    margin: 0;
+}
+
+.level-card p {
+    margin: 0;
 }

@@ -1,4 +1,4 @@
-export const initFirebase = async () => {
+const appPromise = (async () => {
     // Dynamically import Firebase modules
     const [
         { initializeApp, getApps }, 
@@ -25,4 +25,6 @@ export const initFirebase = async () => {
     const db = getFirestore(app);
 
     return { auth, db };
-};
+})();
+
+export default appPromise;

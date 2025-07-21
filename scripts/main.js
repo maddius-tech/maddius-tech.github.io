@@ -1,4 +1,4 @@
-import { initFirebase } from "./firebase-init.js";
+import firebase from "./firebase-init.js";
 import { onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
@@ -20,7 +20,7 @@ window.addEventListener("load", () => {
 
 
 async function initFirebaseAuth() {
-    const { auth, db } = await initFirebase();
+    const { auth, db } = await firebase;
 
     // DOM elements
     const loginForm = document.getElementById("login-form");
