@@ -20,22 +20,24 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
 
     onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-            console.log('not logged in');
-            return;
+        let userProgress = {};
+        if (user) {
+            const userDocRef = doc(db, "users", user.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            const userData = userDocSnap.exists() ? userDocSnap.data() : { progress: {} };
+            userProgress = userData.progress;
         }
 
-        const userDocRef = doc(db, "users", user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        const userData = userDocSnap.exists() ? userDocSnap.data() : { progress: {} };
-
         levelInfo.forEach(level => {
-            const levelProgress = userData.progress?.[level.id];
             const div = levelDivs[level.id];
+
+            const levelProgress = userProgress?.[level.id];
             const starDisplay = div.querySelector(".star-display");
 
-            if (starDisplay) {
-                starDisplay.textContent = `Stars: ${levelProgress ? levelProgress : 0}`;
+            if (user) {
+                starDisplay.textContent = `Stars: ${levelProgress ?? 0}`;
+            } else {
+                starDisplay.textContent = "";
             }
 
         });
