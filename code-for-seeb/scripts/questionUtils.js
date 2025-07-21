@@ -7,14 +7,16 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
     //Get info from object
     const question = questionData['question'];
     const correctAnswer = questionData['correctAnswer'];
-    const mistakeType = questionData['mistakeType'];
+    const mistakes = questionData['mistakes'];
     
     //Display question
     questionText.innerHTML = question;
     
-    //Get options, add correct answer & randomize order
-    const options = generateOptions(correctAnswer, mistakeType);
-    options.push(correctAnswer);
+    //Get options, add correct answer if needed & randomize order
+    const options = generateOptions(mistakes);
+    if (!options.includes(correctAnswer)) {
+        options.push(correctAnswer);
+    }
     const shuffledOptions = shuffleArray(options);
     
     //Displaying options
@@ -40,14 +42,49 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
 }
 
 //Mistake generators
-const wrongSymbols = (correctAnswer) => {
-    const tagName = correctAnswer.replace(/[<>]/g, '');
-    return [
-        `(${tagName})`,
-        `"${tagName}"`,
-        `{${tagName}}`
+const wrongSymbols = ({ targetComponents, extraParams }) => {
+    const differentSymbols = [
+        ['(', ')'],
+        ['"', '"'],
+        ['{', '}'],
+        ['<', '>'],
     ];
+
+    let optionsArray = [];
+    differentSymbols.forEach(symbols => {
+        let newOption = extraParams;
+        //Replace each target component with corresponding new symbols
+        for (let i = 0; i < targetComponents.length; i++) {
+            newOption = newOption.replace(targetComponents[i], symbols[i]);
+        }
+        optionsArray.push(newOption);
+    });
+
+    return optionsArray;
 };
+
+const wrongPlace = ({ targetComponents, extraParams: otherComponents }) => {
+    let optionsArray = [];
+
+    //Currently only handles 1 target component
+    const targetComponent = targetComponents[0];
+
+    for (let i = 0; i <= otherComponents.length; i++) {
+        const newArray = [
+            ...otherComponents.slice(0, i),
+            targetComponent,
+            ...otherComponents.slice(i),
+        ];
+        const newOption = newArray.join(''); 
+        optionsArray.push(newOption);
+    };
+
+    //Later: need to handle limiting number of options for long arrays?? If needed.
+
+    return optionsArray;
+};
+
+const customMistakes = ({ customMistakes }) => customMistakes;
 
 // Lookup tables
 const questionTypes = {
@@ -56,9 +93,12 @@ const questionTypes = {
 
 const mistakeGenerators = {
     "wrongSymbols": wrongSymbols,
+    "wrongPlace": wrongPlace,
+    "customArray": customMistakes,
+
 };
 
-//Helper
+//Helpers
 function shuffleArray(array) {
     const newArr = [...array]; // Make a shallow copy to avoid modifying original
     for (let i = newArr.length - 1; i > 0; i--) {
@@ -68,14 +108,16 @@ function shuffleArray(array) {
     return newArr;
 };
 
-export const generateOptions = (correctAnswer, mistakeType) => {
+export const generateOptions = (mistakes) => {
+    //Get mistake info
+    const { mistakeType } = mistakes;
     const mistakeFn = mistakeGenerators[mistakeType];
     
     if (!mistakeFn) {
         throw new Error(`Unknown mistake type: ${mistakeType}`);
     }
-        
-    return mistakeFn(correctAnswer);
+
+    return mistakeFn(mistakes);
 };
 
 export const displayQuestion = (questionData, container, answerCallback) => {
