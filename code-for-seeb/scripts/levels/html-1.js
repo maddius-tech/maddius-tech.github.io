@@ -1,10 +1,12 @@
 export const questions = [
+    /*
+    */
     {
         question: "What's the <strong>opening tag</strong> for a paragraph?",
         correctAnswer: "<p>",
         questionType: 'multiChoice',
-        mistakes: {
-            mistakeType: 'wrongSymbols', 
+        optionInfo: {
+            optionType: 'wrongSymbols', 
             targetComponents: ['<', '>'],
             extraParams: "<p>",
         },
@@ -13,8 +15,8 @@ export const questions = [
         question: "What's the <strong>opening tag</strong> for a big heading?",
         correctAnswer: "<h1>",
         questionType: 'multiChoice',
-        mistakes: {
-            mistakeType: 'wrongSymbols', 
+        optionInfo: {
+            optionType: 'wrongSymbols', 
             targetComponents: ['<', '>'],
             extraParams: "<h1>",
         },
@@ -23,8 +25,8 @@ export const questions = [
         question: "What's the <strong>opening tag</strong> for a small heading?",
         correctAnswer: "<h3>",
         questionType: 'multiChoice',
-        mistakes: {
-            mistakeType: 'wrongSymbols', 
+        optionInfo: {
+            optionType: 'wrongSymbols', 
             targetComponents: ['<', '>'],
             extraParams: "<h3>",
         },
@@ -33,8 +35,8 @@ export const questions = [
         question: "What's the <strong>closing tag</strong> for a paragraph?",
         correctAnswer: "</p>",
         questionType: 'multiChoice',
-        mistakes: {
-            mistakeType: 'wrongSymbols', 
+        optionInfo: {
+            optionType: 'wrongSymbols', 
             targetComponents: ['<', '>'],
             extraParams: "</p>",
         },
@@ -43,8 +45,8 @@ export const questions = [
         question: "Which <strong>closing tag</strong> is correct?",
         correctAnswer: "</p>",
         questionType: 'multiChoice',
-        mistakes: {
-            mistakeType: 'wrongPlace',
+        optionInfo: {
+            optionType: 'wrongPlace',
             targetComponents: ['/'],
             extraParams: ['<', 'p', '>'],
         },
@@ -53,8 +55,8 @@ export const questions = [
         question: "Which <strong>closing tag</strong> is correct?",
         correctAnswer: "</h1>",
         questionType: 'multiChoice',
-        mistakes: {
-            mistakeType: 'wrongPlace',
+        optionInfo: {
+            optionType: 'wrongPlace',
             targetComponents: ['/'],
             extraParams: ['<', 'h1', '>'],
         },
@@ -63,12 +65,25 @@ export const questions = [
         question: "Which makes a <strong>paragraph</strong> saying 'Hello!'?",
         correctAnswer: "<p>Hello!</p>",
         questionType: 'multiChoice',
-        mistakes: {
-            mistakeType: 'customArray',
-            customMistakes: [
+        optionInfo: {
+            optionType: 'customOptions',
+            customOptions: [
                 '<p Hello! /p>',
                 '<p Hello! />',
                 'p<Hello!>/p',
+            ],
+        },
+    },
+    {
+        question: "Put these in the correct order.",
+        correctAnswer: "<p>I love muffins.</p>",
+        questionType: 'order',
+        optionInfo: {
+            optionType: 'customOptions',
+            customOptions: [
+                '<p>',
+                'I love muffins.',
+                '</p>',
             ],
         },
     },

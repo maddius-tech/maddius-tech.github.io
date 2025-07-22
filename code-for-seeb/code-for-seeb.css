@@ -21,6 +21,10 @@ main {
     padding: 16px;
 }
 
+p {
+    margin: 0;
+}
+
 /*Levels map styles*/
 
 #levels-map-container {
@@ -58,23 +62,67 @@ main {
     font-size: x-large;
 }
 
-#options-container {
+#question-container p {
+    margin: 24px 0;
+}
+
+#answers-container {
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#answers {
+    display: flex;
+    gap: 10px;
+}
+
+#answer-submit {
+    background-color: black;
+    color: white;
+    width: 80px;
+}
+
+#answer-submit,
+#answers .option-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 0px 16px;
+    height: 80px;
+}
+
+.options-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); 
     gap: 10px;
 }
 
+.options-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
 .option-div {
     height: 100px;
+    padding: 0 50px;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: transparent;
     color: black;
     transition: background-color 0.3s, color 0.3s;
+    cursor: pointer;
 }
 
 .option-div:hover {
     background-color: black;
     color: white;
+}
+
+.hidden {
+    display: none !important;
 }

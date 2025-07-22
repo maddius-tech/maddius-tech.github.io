@@ -1,19 +1,30 @@
+import { getOptions, shuffleArray } from "./optionUtils.js";
+
+//Helper
+const createSubmitButton = (parent) => {
+    const submitBtn = document.createElement('div');
+    submitBtn.id = 'answer-submit';
+    submitBtn.classList.add('rounded-box');
+    submitBtn.innerHTML = '<p>Go!</p>';
+
+    parent.appendChild(submitBtn);
+    return submitBtn;
+}
+
 //Functions for different question types
-const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
-    //Get elements
-    const questionText = container.querySelector("#question-text");
-    const optionsContainer = container.querySelector("#options-container");
-    
+const displayMultiChoiceQ = (questionData, { questionText, optionsContainer }, handleAnswer) => {
+    //Change displays
+    optionsContainer.classList.value = '';
+    optionsContainer.classList.add("options-grid");
+
     //Get info from object
-    const question = questionData['question'];
-    const correctAnswer = questionData['correctAnswer'];
-    const mistakes = questionData['mistakes'];
+    const { question, correctAnswer, optionInfo } = questionData;
     
     //Display question
     questionText.innerHTML = question;
     
     //Get options, add correct answer if needed & randomize order
-    const options = generateOptions(mistakes);
+    const options = getOptions(optionInfo);
     if (!options.includes(correctAnswer)) {
         options.push(correctAnswer);
     }
@@ -30,6 +41,7 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
         const isCorrect = option === correctAnswer;
         optionDiv.addEventListener('click', () => {
             if (isCorrect) {
+                //Clear content from this question
                 questionText.innerHTML = '';
                 optionsContainer.innerHTML = '';
             }
@@ -41,83 +53,69 @@ const displayMultiChoiceQ = (questionData, container, handleAnswer) => {
     });
 }
 
-//Mistake generators
-const wrongSymbols = ({ targetComponents, extraParams }) => {
-    const differentSymbols = [
-        ['(', ')'],
-        ['"', '"'],
-        ['{', '}'],
-        ['<', '>'],
-    ];
+const displayOrderQ = (questionData, elements, handleAnswer) => {
+    //Get info from objects
+    const { question, correctAnswer, optionInfo } = questionData;
+    const { questionText, optionsContainer, answersContainer, answers } = elements;
+    
+    //Change displays
+    answersContainer.classList.remove("hidden");
+    optionsContainer.classList.value = '';
+    optionsContainer.classList.add("options-row");
 
-    let optionsArray = [];
-    differentSymbols.forEach(symbols => {
-        let newOption = extraParams;
-        //Replace each target component with corresponding new symbols
-        for (let i = 0; i < targetComponents.length; i++) {
-            newOption = newOption.replace(targetComponents[i], symbols[i]);
+    //Create submit button
+    const submitBtn = createSubmitButton(answersContainer);
+    submitBtn.addEventListener('click', () => {
+        //Get answer
+        const selectedDivs = Array.from(answers.children); 
+        let answer = "";
+        selectedDivs.forEach(div => {
+            answer += div.textContent;
+        });
+
+        //Store whether it is correct
+        const isCorrect = answer === correctAnswer;
+        if (isCorrect) {
+            //Clear content from this question
+            questionText.innerHTML = '';
+            optionsContainer.innerHTML = '';
+            answers.innerHTML = '';
+            submitBtn.remove();
         }
-        optionsArray.push(newOption);
+        handleAnswer(isCorrect);
     });
 
-    return optionsArray;
+    //Display question
+    questionText.innerHTML = question;
+    
+    //Get options & randomize order
+    const options = getOptions(optionInfo);
+    const shuffledOptions = shuffleArray(options);
+
+    //Displaying options
+    shuffledOptions.forEach(option => {
+        //Create div for option
+        const optionDiv = document.createElement("div");
+        optionDiv.classList.add("option-div", "rounded-box");
+        optionDiv.textContent = option;
+
+        optionDiv.addEventListener('click', () => {
+            if (optionDiv.parentElement.id === "options-container") {
+                answers.appendChild(optionDiv);
+            } else {
+                optionsContainer.appendChild(optionDiv);
+            }
+        });
+        
+        //Add to container
+        optionsContainer.appendChild(optionDiv);
+    });
 };
 
-const wrongPlace = ({ targetComponents, extraParams: otherComponents }) => {
-    let optionsArray = [];
-
-    //Currently only handles 1 target component
-    const targetComponent = targetComponents[0];
-
-    for (let i = 0; i <= otherComponents.length; i++) {
-        const newArray = [
-            ...otherComponents.slice(0, i),
-            targetComponent,
-            ...otherComponents.slice(i),
-        ];
-        const newOption = newArray.join(''); 
-        optionsArray.push(newOption);
-    };
-
-    //Later: need to handle limiting number of options for long arrays?? If needed.
-
-    return optionsArray;
-};
-
-const customMistakes = ({ customMistakes }) => customMistakes;
-
-// Lookup tables
+// Lookup table
 const questionTypes = {
     "multiChoice": displayMultiChoiceQ,
-};
-
-const mistakeGenerators = {
-    "wrongSymbols": wrongSymbols,
-    "wrongPlace": wrongPlace,
-    "customArray": customMistakes,
-
-};
-
-//Helpers
-function shuffleArray(array) {
-    const newArr = [...array]; // Make a shallow copy to avoid modifying original
-    for (let i = newArr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newArr[i], newArr[j]] = [newArr[j], newArr[i]]; // Swap elements
-    }
-    return newArr;
-};
-
-export const generateOptions = (mistakes) => {
-    //Get mistake info
-    const { mistakeType } = mistakes;
-    const mistakeFn = mistakeGenerators[mistakeType];
-    
-    if (!mistakeFn) {
-        throw new Error(`Unknown mistake type: ${mistakeType}`);
-    }
-
-    return mistakeFn(mistakes);
+    "order": displayOrderQ,
 };
 
 export const displayQuestion = (questionData, container, answerCallback) => {
@@ -127,7 +125,14 @@ export const displayQuestion = (questionData, container, answerCallback) => {
     if (!questionFn) {
         throw new Error(`Unknown question type: ${questionType}`);
     }
+    
+    //Get elements
+    const elements = {
+        questionText: container.querySelector("#question-text"),
+        optionsContainer: container.querySelector("#options-container"),
+        answersContainer: container.querySelector("#answers-container"),
+        answers: container.querySelector("#answers"),
+    };
 
-    return questionFn(questionData, container, answerCallback);
+    return questionFn(questionData, elements, answerCallback);
 }
-
