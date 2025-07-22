@@ -12,16 +12,19 @@ const createSubmitButton = (parent) => {
 }
 
 //Functions for different question types
-const displayMultiChoiceQ = (questionData, { questionText, optionsContainer }, handleAnswer) => {
+const displayMultiChoiceQ = (questionData, { questionText, subtitleText, optionsContainer }, handleAnswer) => {
     //Change displays
     optionsContainer.classList.value = '';
     optionsContainer.classList.add("options-grid");
 
     //Get info from object
-    const { question, correctAnswer, optionInfo } = questionData;
+    const { question, subtitle, correctAnswer, optionInfo } = questionData;
     
     //Display question
     questionText.innerHTML = question;
+    if (subtitle) {
+        subtitleText.innerHTML = subtitle;
+    }
     
     //Get options, add correct answer if needed & randomize order
     const options = getOptions(optionInfo);
@@ -43,6 +46,7 @@ const displayMultiChoiceQ = (questionData, { questionText, optionsContainer }, h
             if (isCorrect) {
                 //Clear content from this question
                 questionText.innerHTML = '';
+                subtitleText.innerHTML = '';
                 optionsContainer.innerHTML = '';
             }
             handleAnswer(isCorrect);
@@ -129,6 +133,7 @@ export const displayQuestion = (questionData, container, answerCallback) => {
     //Get elements
     const elements = {
         questionText: container.querySelector("#question-text"),
+        subtitleText: container.querySelector("#subtitle-text"),
         optionsContainer: container.querySelector("#options-container"),
         answersContainer: container.querySelector("#answers-container"),
         answers: container.querySelector("#answers"),

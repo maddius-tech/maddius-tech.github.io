@@ -2,6 +2,17 @@ export const questions = [
     /*
     */
     {
+        question: "___Types of Seeb&lt;/h1&gt;",
+        subtitle: "What's missing?",
+        correctAnswer: "<h1>",
+        questionType: 'multiChoice',
+        optionInfo: {
+            optionType: 'wrongSymbols', 
+            targetComponents: ['<', '>'],
+            extraParams: "<h1>",
+        },
+    },
+    {
         question: "What's the <strong>opening tag</strong> for a paragraph?",
         correctAnswer: "<p>",
         questionType: 'multiChoice',
@@ -84,6 +95,39 @@ export const questions = [
                 '<p>',
                 'I love muffins.',
                 '</p>',
+            ],
+        },
+    },
+    {
+        question: "Put these in the correct order.",
+        correctAnswer: "<h1>Types of Seeb</h1>",
+        questionType: 'order',
+        optionInfo: {
+            optionType: 'customOptions',
+            customOptions: [
+                '<h1>',
+                'Types of Seeb',
+                '</h1>',
+                '/<h1>',
+                '<h1',
+                '/h1>',
+            ],
+        },
+    },
+    {
+        question: "Put these in the correct order.",
+        correctAnswer: "<h3>Maddi's Favourite Foods</h3>",
+        questionType: 'order',
+        optionInfo: {
+            optionType: 'customOptions',
+            customOptions: [
+                '<h3>',
+                "Maddi's Favourite Foods",
+                '</h3>',
+                '/<h3>',
+                '<h3',
+                'h3>',
+                '/h3>',
             ],
         },
     },

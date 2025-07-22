@@ -62,8 +62,21 @@ p {
     font-size: x-large;
 }
 
+#question-container {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#question-container h3 {
+    font-weight: normal;
+    margin: 0;
+}
+
 #question-container p {
-    margin: 24px 0;
+    margin: 5px 0;
+    font-size: large;
 }
 
 #answers-container {
@@ -104,6 +117,7 @@ p {
     display: flex;
     gap: 10px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .option-div {
