@@ -3,7 +3,7 @@ export const questions = [
     */
     {
         question: "___Types of Seeb&lt;/h1&gt;",
-        subtitle: "What's missing?",
+        subtitle: "What do you think is missing?",
         correctAnswer: "<h1>",
         questionType: 'multiChoice',
         optionInfo: {
