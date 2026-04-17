@@ -5,12 +5,28 @@
 // Get canvas and context
 const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
+const gridSize = 50;
 
+/*
 // For Supabase (leaderboard database)
 const supabaseUrl = 'https://qeyhzsgsmmvyxrilacrs.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFleWh6c2dzbW12eXhyaWxhY3JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0MjE5ODQsImV4cCI6MjA1Mjk5Nzk4NH0.wBKKLSpLHeixLn8Iue-IRvDSJ1M1N-zUSbb01TfQHLE';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-const gridSize = 50;
+*/
+
+// Firebase config
+const firebaseConfig = {
+    apiKey: "AIzaSyBPLIhujPiX86cV9zqDXRQ-wK4YWpMISho",
+    authDomain: "need-for-seeb.firebaseapp.com",
+    projectId: "need-for-seeb",
+    storageBucket: "need-for-seeb.firebasestorage.app",
+    messagingSenderId: "1053843980388",
+    appId: "1:1053843980388:web:15178f95b552f278399f71"
+};
+
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // Running game
 let gameRunning = true;
@@ -661,11 +677,11 @@ async function saveScore() {
     let gameMode = getGameMode();
 
     try {
-        await saveToSupabase(playerName, score, gameMode, selectedMaddi);
+        await saveToFirebase(playerName, score, gameMode, selectedMaddi);
     } catch (error) {
         console.error(error);
         saveToLocalStorage(playerName, score, gameMode, selectedMaddi);
-        console.log("Error saving to Supabase. Saved to local storage instead.");
+        console.log("Error saving to Firebase. Saved to local storage instead.");
     }
 
     saveScoreButton.textContent = "Score saved!";
@@ -674,6 +690,7 @@ async function saveScore() {
     displayLeaderboard();
 }
 
+/*
 async function saveToSupabase(name, score, game_mode, avatar) {    
     const { data, error } = await supabaseClient
         .from('leaderboard')
@@ -683,6 +700,23 @@ async function saveToSupabase(name, score, game_mode, avatar) {
         throw new Error(`Error saving to Supabase: ${error.message}`);
     } else {
         console.log('Saved:', data);
+    }
+}
+    */
+
+async function saveToFirebase(name, score, game_mode, avatar) {
+    try {
+        const docRef = await db.collection("leaderboard").add({
+            name,
+            score,
+            game_mode,
+            avatar,
+            createdAt: Date.now(),
+        });
+
+        console.log("Saved with ID: ", docRef.id);
+    } catch (error) {
+        throw new Error(`Error saving to Firebase: ${error.message}`);
     }
 }
 
@@ -706,15 +740,16 @@ function saveToLocalStorage(name, score, gameMode, avatar) {
 }
 
 async function displayLeaderboard() {
-    // Getting leaderboard info from Supabase or localStorage
+    // Getting leaderboard info from Firebase or localStorage
     const gameMode = getGameMode();
     let leaderboard;
+    console.log("LEADERBOARD");
     try {
-        leaderboard = await getSupabaseLeaderboard(gameMode, leaderboardLimit);
+        leaderboard = await getFirebaseLeaderboard(gameMode, leaderboardLimit);
     } catch (error) {
         console.error(error);
         leaderboard = getLocalLeaderboard(gameMode);
-        console.log("Error fetching leaderboard from Supabase. Showing local leaderboard instead.");
+        console.log("Error fetching leaderboard from Firebase. Showing local leaderboard instead.");
     }
 
     // Getting table from html
@@ -750,6 +785,7 @@ async function displayLeaderboard() {
     });
 }
 
+/*
 async function getSupabaseLeaderboard(gameMode, limit) {
     let query = supabaseClient
         .from('leaderboard')
@@ -767,36 +803,62 @@ async function getSupabaseLeaderboard(gameMode, limit) {
         return data;
     }
 }
+    */
+
+async function getFirebaseLeaderboard(gameMode, limit) {
+    try {
+        let queryRef = db
+            .collection("leaderboard")
+            .where("game_mode", "==", gameMode)
+            .orderBy("score", "desc");
+
+        if (limit !== undefined) {
+            queryRef = queryRef.limit(limit);
+        }
+
+        const snapshot = await queryRef.get();
+
+        const data = [];
+
+        snapshot.forEach(doc => {
+            data.push(doc.data());
+        });
+
+        return data;
+    } catch (error) {
+        throw new Error(`Error fetching leaderboard from Firebase: ${error.message}`);
+    }
+}
 
 function getLocalLeaderboard(gameMode) {
     const leaderboardKey = `${gameMode}-leaderboard`;
     return JSON.parse(localStorage.getItem(leaderboardKey)) || [];
 }
 
-//Syncs local scores for specific game mode to Supabase
-async function syncLocalScoresToSupabase(gameMode) {
+//Syncs local scores for specific game mode to Firebase
+async function syncLocalScoresToFirebase(gameMode) {
     const localScores = getLocalLeaderboard(gameMode);
-    let supabaseScores = [];
+    let firebaseScores = [];
 
     try {
-        supabaseScores = await getSupabaseLeaderboard(gameMode);
+        firebaseScores = await getFirebaseLeaderboard(gameMode);
     } catch (error) {
-        console.warn("Skipping sync – Supabase not reachable:", error.message);
+        console.warn("Skipping sync – Firebase not reachable:", error.message);
         return;
     }
 
-    //Check which entries aren't already in supabase
+    //Check which entries aren't already in firebase
     const newEntries = localScores.filter(localEntry => {
-        return !supabaseScores.some(supabaseEntry =>
-            supabaseEntry.name === localEntry.name &&
-            supabaseEntry.score === localEntry.score &&
-            supabaseEntry.avatar === localEntry.avatar
+        return !firebaseScores.some(firebaseEntry =>
+            firebaseEntry.name === localEntry.name &&
+            firebaseEntry.score === localEntry.score &&
+            firebaseEntry.avatar === localEntry.avatar
         );
     });
 
     for (const entry of newEntries) {
         try {
-            await saveToSupabase(entry.name, entry.score, gameMode, entry.avatar);
+            await saveToFirebase(entry.name, entry.score, gameMode, entry.avatar);
             console.log(`Synced score for ${entry.name}`);
         } catch (error) {
             console.error(`Failed to sync ${entry.name}:`, error.message);
@@ -804,12 +866,12 @@ async function syncLocalScoresToSupabase(gameMode) {
     }
 }
 
-//Syncs all local scores to supabase
-async function syncAllLocalScoresToSupabase() {
+//Syncs all local scores to firebase
+async function syncAllLocalScoresToFirebase() {
     const gameModes = [0, shortGame, medGame, longGame];
 
     for (const mode of gameModes) {
-        await syncLocalScoresToSupabase(mode);
+        await syncLocalScoresToFirebase(mode);
     }
 }
 
@@ -825,9 +887,9 @@ function getGameMode() {
 //Event listener
 saveScoreButton.addEventListener("click", saveScore);
 
-//Syncs new entries from local leaderboard to Supabase when window loads
+//Syncs new entries from local leaderboard to Firebase when window loads
 window.addEventListener('DOMContentLoaded', async () => {
-    await syncAllLocalScoresToSupabase();
+    await syncAllLocalScoresToFirebase();
     await displayLeaderboard();
 });
 
