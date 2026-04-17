@@ -7,13 +7,6 @@ const canvas = document.getElementById('game-canvas');
 const ctx = canvas.getContext('2d');
 const gridSize = 50;
 
-/*
-// For Supabase (leaderboard database)
-const supabaseUrl = 'https://qeyhzsgsmmvyxrilacrs.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFleWh6c2dzbW12eXhyaWxhY3JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0MjE5ODQsImV4cCI6MjA1Mjk5Nzk4NH0.wBKKLSpLHeixLn8Iue-IRvDSJ1M1N-zUSbb01TfQHLE';
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-*/
-
 // Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyBPLIhujPiX86cV9zqDXRQ-wK4YWpMISho",
@@ -690,20 +683,6 @@ async function saveScore() {
     displayLeaderboard();
 }
 
-/*
-async function saveToSupabase(name, score, game_mode, avatar) {    
-    const { data, error } = await supabaseClient
-        .from('leaderboard')
-        .insert([{ name, score, game_mode, avatar}]);
-    
-    if (error) {
-        throw new Error(`Error saving to Supabase: ${error.message}`);
-    } else {
-        console.log('Saved:', data);
-    }
-}
-    */
-
 async function saveToFirebase(name, score, game_mode, avatar) {
     try {
         const docRef = await db.collection("leaderboard").add({
@@ -784,26 +763,6 @@ async function displayLeaderboard() {
         leaderboardTable.appendChild(row);
     });
 }
-
-/*
-async function getSupabaseLeaderboard(gameMode, limit) {
-    let query = supabaseClient
-        .from('leaderboard')
-        .select('name, score, avatar')
-        .eq('game_mode', gameMode)
-        .order('score', { ascending: false});
-    if (limit !== undefined) {
-        query = query.limit(limit);
-    }
-    const { data, error } = await query;
-        
-    if (error) {
-        throw new Error(`Error fetching leaderboard from Supabase: ${error.message}`);
-    } else {
-        return data;
-    }
-}
-    */
 
 async function getFirebaseLeaderboard(gameMode, limit) {
     try {
