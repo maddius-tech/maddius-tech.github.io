@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+  line-height: 1.6;
+  height: 100%;
+}
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+  background: #333;
+  color: #fff;
+  padding: 1rem;
+}
+
+main {
+  padding: 1rem;
+  flex: 1;
+}
+
+footer {
+  background: #f4f4f4;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #fafafa;
+}
